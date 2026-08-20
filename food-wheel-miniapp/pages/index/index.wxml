@@ -19,7 +19,7 @@
         </view>
         <view class="wheel-wrap" style="width:{{wheelPx}}px;height:{{wheelPx}}px"><canvas id="wheelCanvas" type="2d" class="wheel" style="width:{{wheelPx}}px;height:{{wheelPx}}px"></canvas></view>
         <button class="spin button" disabled="{{spinning}}" bindtap="spin">{{spinning ? '转动中…' : '转一下'}}</button>
-        <view class="result glass-soft"><block wx:if="{{result}}"><text class="result-name">{{result.name}}</text><text class="result-meta">{{result.category}} · 今天就吃这个</text></block><text wx:else class="empty">选择分类后，转盘帮你决定</text></view>
+        <view class="result glass-soft {{result && !spinning ? 'result-finished' : ''}}"><block wx:if="{{spinning}}"><text class="spin-emoji">{{spinEmoji}}</text><text class="drawing-title">正在为你挑选</text><view class="loading-dots"><text></text><text></text><text></text></view></block><block wx:elif="{{result}}"><text class="result-name">{{result.name}}</text><text class="result-meta">{{result.category}} · 今天就吃这个</text></block><text wx:else class="empty">选择分类后，转盘帮你决定</text></view>
         <view class="preview-title">当前菜品（{{filtered.length}}道）</view>
         <view class="groups">
           <view class="dish-group" wx:for="{{groups}}" wx:key="category">
