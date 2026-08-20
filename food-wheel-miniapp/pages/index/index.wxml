@@ -1,0 +1,71 @@
+<image class="background-image" src="/assets/food-background.jpg" mode="aspectFill" />
+<view class="page">
+  <view class="glass header">
+    <text class="tagline">{{tagline}}</text>
+    <text class="title">今天吃什么？</text>
+  </view>
+
+  <view class="tabs glass">
+    <view class="tab {{mode === 'wheel' ? 'active' : ''}}" data-mode="wheel" bindtap="switchMode">智能抽菜</view>
+    <view class="tab {{mode === 'match' ? 'active' : ''}}" data-mode="match" bindtap="switchMode">智能组菜</view>
+  </view>
+
+  <block wx:if="{{mode === 'wheel'}}">
+    <view class="wheel-layout">
+      <view class="glass wheel-panel">
+        <view class="toolbar glass-soft">
+          <text class="toolbar-title">选择转盘分类</text>
+          <picker class="category-picker" range="{{categories}}" value="{{categoryIndex}}" bindchange="onCategoryChange"><view>{{currentCategory}}</view></picker>
+        </view>
+        <view class="wheel-wrap" style="width:{{wheelPx}}px;height:{{wheelPx}}px"><canvas id="wheelCanvas" type="2d" class="wheel" style="width:{{wheelPx}}px;height:{{wheelPx}}px"></canvas></view>
+        <button class="spin button" disabled="{{spinning}}" bindtap="spin">{{spinning ? '转动中…' : '转一下'}}</button>
+        <view class="result glass-soft"><block wx:if="{{result}}"><text class="result-name">{{result.name}}</text><text class="result-meta">{{result.category}} · 今天就吃这个</text></block><text wx:else class="empty">选择分类后，转盘帮你决定</text></view>
+        <view class="preview-title">当前菜品（{{filtered.length}}道）</view>
+        <view class="groups">
+          <view class="dish-group" wx:for="{{groups}}" wx:key="category">
+            <view class="group-head" data-category="{{item.category}}" bindtap="toggleGroup"><text>{{item.category}}</text><text class="group-meta">{{item.items.length}} 道 {{item.open ? '⌃' : '⌄'}}</text></view>
+            <view class="group-body" wx:if="{{item.open}}"><view class="preview-item" wx:for="{{item.items}}" wx:key="id" wx:for-item="dish"><text class="number">{{dish.number}}</text><text>{{dish.name}}</text></view></view>
+          </view>
+        </view>
+      </view>
+
+      <view class="glass manager">
+        <view class="section-head"><text class="section-title">我的菜品</text></view>
+        <view class="add-grid">
+          <input class="input" placeholder="菜名" value="{{dishName}}" bindinput="onDishNameInput" bindconfirm="addDish" />
+          <picker class="picker" range="{{categoryOptions}}" value="{{categoryIndex}}" bindchange="onDishCategoryChange"><view>{{dishCategory}}</view></picker>
+          <button class="button primary add-button" bindtap="addDish">添加</button>
+        </view>
+        <view class="dish-search"><input class="input" placeholder="搜索菜名（支持模糊搜索）" value="{{searchText}}" bindinput="onSearchInput" bindconfirm="onSearchConfirm" bindblur="onSearchBlur"/><text class="search-count">{{displayItems.length}} 道</text></view>
+        <view class="file-actions">
+          <button class="button primary" bindtap="openImportPanel">⇧ 从文本文件导入</button>
+          <button class="button primary" bindtap="exportMenu">⇩ 导出菜单（TXT）</button>
+          <button class="button outline" bindtap="showFormat">查看格式</button>
+        </view>
+        <view wx:if="{{importVisible}}" class="import-panel glass-soft">
+          <textarea class="import-input" maxlength="-1" placeholder="粘贴内容，例如：红烧肉·荤菜\n番茄炒蛋·素菜" value="{{importText}}" bindinput="onImportTextInput"></textarea>
+          <view class="import-actions"><button class="button outline" bindtap="importMenu">选择 TXT 文件</button><button class="button primary" bindtap="importPastedText">导入粘贴内容</button><button class="button outline" bindtap="closeImportPanel">取消</button></view>
+        </view>
+        <view class="dish-list">
+          <view class="dish-chip edit-chip" wx:for="{{displayItems}}" wx:key="id">
+            <input class="edit-name" value="{{item.name}}" data-index="{{item.sourceIndex}}" bindinput="onEditNameInput" bindconfirm="onEditNameConfirm" bindblur="onEditNameBlur"/><text class="category-label">· {{item.category}}</text>
+            <text class="remove" data-index="{{item.sourceIndex}}" catchtap="deleteDish">×</text>
+          </view>
+        </view>
+        <text class="hint">点击菜品名称可编辑，点击 × 删除。</text>
+      </view>
+    </view>
+  </block>
+
+  <block wx:if="{{mode === 'match'}}">
+    <view class="glass match-panel">
+      <text class="section-title">冰箱里有什么？</text>
+      <textarea class="ingredient-input" placeholder="输入或粘贴食材，例如：鸡蛋、西红柿、葱\n也支持每行一个食材" value="{{ingredientText}}" bindinput="onIngredientInput"></textarea>
+      <button class="spin button" bindtap="findRecipes">查找能做的菜</button>
+      <view class="chips"><text class="chip" wx:for="{{ingredients}}" wx:key="*this">{{item}}</text></view>
+      <view class="recipe glass-soft" wx:for="{{recipes}}" wx:key="id"><text class="recipe-name">{{item.name}}</text><text class="recipe-meta">{{item.category}} · 已有：{{item.haveText}}{{item.missingText ? ' · 还需要：' + item.missingText : ''}}</text></view>
+      <text wx:if="{{searched && !recipes.length}}" class="empty">暂时没有匹配菜谱，请增加食材或扩充本地菜品。</text>
+      <view class="notice">当前使用本地菜谱匹配，不需要联网或 API Key。</view>
+    </view>
+  </block>
+</view>

@@ -1,0 +1,4 @@
+{
+  "desc": "菜谱转盘离线版",
+  "rules": [{ "action": "allow", "page": "*" }]
+}
