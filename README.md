@@ -1,1 +1,39 @@
-# TasteWheel
+# TasteWheel · 今天吃什么
+
+一个帮助你决定吃什么的菜谱转盘项目，支持随机抽取菜品、管理菜品，以及根据现有食材匹配菜谱。
+
+## 功能
+
+- 菜品随机转盘
+- 菜品分类与管理
+- 根据冰箱食材匹配可制作的菜谱
+- 支持导入和导出菜品数据
+- 提供网页版和微信小程序版
+
+## 网页版
+
+直接打开 [`food-wheel.html`](./food-wheel.html) 即可使用，无需安装依赖或配置 API。
+
+## 微信小程序版
+
+1. 使用微信开发者工具导入 `food-wheel-miniapp` 目录。
+2. 在 `project.config.json` 中将 `REPLACE_WITH_YOUR_WECHAT_APPID` 替换为你自己的小程序 AppID。
+3. 编译并预览项目。
+
+## 项目结构
+
+```text
+food-wheel.html                 网页版
+food-wheel-miniapp/             微信小程序版
+  pages/index/                  主页面
+  app.js                        小程序入口
+  project.config.json           小程序项目配置
+```
+
+## 数据说明
+
+菜品数据默认保存在浏览器或小程序本地存储中，不需要服务器或数据库。
+
+## License
+
+暂未设置许可证。
